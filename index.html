@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Process Flow</title>
+  <title>Socrates Palacios</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="styles.css">
@@ -184,18 +184,38 @@
     <hr>
     <div class="container" align="center">
         <div class="row">
+            <input type="number"  disabled>
+            <input type="number" disabled>
+            <input type="number" disabled>
+            <input type="number" disabled>
+            <input id="deltah" type="number" placeholder="Δh" step=".01">
+        </div>
+        <div class="row">
+            <input type="number" disabled>
             <input type="number" disabled>
             <input type="number" step=".01" placeholder="i,j-1">
             <input type="number" disabled>
-        </div>
-        <div class="row">
-            <input type="number" step=".01" placeholder="i-1,j">
-            <input type="number" step=".01" placeholder="i,j">
-            <input type="number" step=".01" placeholder="i+1,j">
+            <input type="number" disabled>
         </div>
         <div class="row">
             <input type="number" disabled>
+            <input type="number" step=".01" placeholder="i-1,j">
+            <input type="number" step=".01" placeholder="i,j">
+            <input type="number" step=".01" placeholder="i+1,j">
+            <input type="number" disabled>
+        </div>
+        <div class="row">
+            <input type="number" disabled>
+            <input type="number" disabled>
             <input type="number" step=".01" placeholder="i,j+1">
+            <input type="number" disabled>
+            <input type="number" disabled>
+        </div>
+        <div class="row">
+            <input id="deltar" type="number" placeholder="Δr" step=".01">
+            <input type="number" disabled>
+            <input type="number" disabled>
+            <input type="number" disabled>
             <input type="number" disabled>
         </div>
     </div>
@@ -208,10 +228,8 @@
             <input id="deltat" type="number" placeholder="Δt" step=".01">
         </div>
         <div class="row">
-            <input id="deltar" type="number" placeholder="Δr" step=".01">
-        </div>
-        <div class="row">
-            <input id="deltah" type="number" placeholder="Δh" step=".01">
+            <button type="button" class="btn btn-info">Calcular</button>
+            <button type="button" class="btn btn-light">Limpiar</button>
         </div>
     </div>
     <hr>
