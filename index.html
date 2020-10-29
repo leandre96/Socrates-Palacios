@@ -7,10 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
+  <link rel="icon" href="http://example.com/favicon.png">
 <!-- jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <script id="code">
@@ -132,18 +131,15 @@
     }
 	
 	function myFunction(){
-	var capacidadTanque = new Number($("#capacidadTanque").val());
-	var numeroTanque = new Number($("#numeroTanque").val());
-	var pulpaRefinada = capacidadTanque*numeroTanque;
-	var xPulpa = new Number($("#xPulpa").val());
-	var xPulpaConcentrada = new Number($("#xPulpaConcentrada").val());
-	var mPulpaConcentrada = (pulpaRefinada*xPulpa)/xPulpaConcentrada;
-	var mAguaEvaporada = pulpaRefinada - mPulpaConcentrada;
-	var mVaporDeAgua = ((mPulpaConcentrada*3.5*50)+(mAguaEvaporada*2450)-(pulpaRefinada*3.75*60))/(2537.4-345);
-  var mAguaTorre = (((182.38-2450)/(118.8-182.38))*mAguaEvaporada)/1000;
-  var porcentajeRendimientoRefinamientoEnfriamiento = new Number($("#porcentajeRendimientoRefinamientoEnfriamiento").val());
-  var porcentajeRendimientoDespulpado = new Number($("#porcentajeRendimientoDespulpado").val());
-  var porcentajeRendimientoLavadoSeleccion = new Number($("#porcentajeRendimientoLavadoSeleccion").val());
+	var deltah = new Number($("#deltah").val());
+	var up = new Number($("#up").val());
+	var left = new Number($("#left").val());
+	var center = new Number($("#center").val());
+    var right = new Number($("#right").val());
+    var bottom = new Number($("#bottom").val());
+    var deltar = new Number($("#deltar").val());
+    var alpha = new Number($("#alpha").val());
+    var deltar = new Number($("#deltar").val());
   var masaPulpa = (pulpaRefinada*100)/porcentajeRendimientoRefinamientoEnfriamiento;
   var frutaLavada = (masaPulpa*100)/porcentajeRendimientoDespulpado;
   var kgFruta = (frutaLavada*100)/porcentajeRendimientoLavadoSeleccion;
@@ -158,21 +154,15 @@
 	}
 	
 	function myCleaningFunction(){
-	$("#capacidadTanque").val("");
-	$("#numeroTanque").val("");
-	$("#xPulpa").val("");
-	$("#xPulpaConcentrada").val("");
-	$("#pulpaRefinada").val("");
-	$("#mPulpaConcentrada").val("");
-	$("#mAguaEvaporada").val("");
-	$("#mVaporDeAgua").val("");
-  $("#mAguaTorre").val("");
-  $("#porcentajeRendimientoDespulpado").val("");
-  $("#porcentajeRendimientoLavadoSeleccion").val("");
-  $("#porcentajeRendimientoRefinamientoEnfriamiento").val();
-  $("#kgFruta").val("");
-  $("#frutaLavada").val("");
-  $("#masaPulpa").val("");
+        $("#deltah").val("");
+        $("#up").val("");
+        $("#left").val("");
+        $("#center").val("");
+        $("#right").val("");
+        $("#bottom").val("");
+        $("#deltar").val("");
+        $("#alpha").val("");
+        $("#deltat").val("");
 	}
   </script>
 
@@ -193,21 +183,21 @@
         <div class="row">
             <input type="number" disabled>
             <input type="number" disabled>
-            <input type="number" step=".01" placeholder="i,j-1">
+            <input type="number" id="up" step=".01" placeholder="i,j-1">
             <input type="number" disabled>
             <input type="number" disabled>
         </div>
         <div class="row">
             <input type="number" disabled>
-            <input type="number" step=".01" placeholder="i-1,j">
-            <input type="number" step=".01" placeholder="i,j">
-            <input type="number" step=".01" placeholder="i+1,j">
+            <input type="number" id="left" step=".01" placeholder="i-1,j">
+            <input type="number" id="center" step=".01" placeholder="i,j">
+            <input type="number" id="right" step=".01" placeholder="i+1,j">
             <input type="number" disabled>
         </div>
         <div class="row">
             <input type="number" disabled>
             <input type="number" disabled>
-            <input type="number" step=".01" placeholder="i,j+1">
+            <input type="number" id="bottom" step=".01" placeholder="i,j+1">
             <input type="number" disabled>
             <input type="number" disabled>
         </div>
@@ -235,10 +225,10 @@
     <hr>
     <div class="container" align="center">
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-            <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
-            <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
-            <li><a data-toggle="tab" href="#menu3">Menu 3</a></li>
+            <li class="active"><a data-toggle="tab" href="#home">Escenario 1</a></li>
+            <li><a data-toggle="tab" href="#menu1">Escenario 2</a></li>
+            <li><a data-toggle="tab" href="#menu2">Escenario 3</a></li>
+            <li><a data-toggle="tab" href="#menu3">Escenario 4</a></li>
         </ul>
           
         <div class="tab-content">
