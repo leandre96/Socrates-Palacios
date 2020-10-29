@@ -5,14 +5,19 @@
   <title>Socrates Palacios</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link rel="icon" href="http://example.com/favicon.png">
-<!-- jQuery library -->
+  <!-- jQuery library -->
+  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <script id="code">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+  
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+
+  <script id="code" type="text/javascript">
     function init() {
       var $ = go.GraphObject.make;  // for more concise visual tree definitions
 
@@ -130,6 +135,124 @@
       myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
     }
 	
+  var Microorganismos = {
+    "data":[
+      {
+        "name":"A. hydrophila",
+        "temperatura":51,
+        "valorD":8.08,
+        "valorZ":5.22
+      },
+      {
+        "name":"B. cereus",
+        "temperatura":100,
+        "valorD":5.0,
+        "valorZ":6.9
+      },
+      {
+        "name":"B. coagulans",
+        "temperatura":110,
+        "valorD":2.7,
+        "valorZ":6.1
+      },
+      {
+        "name":"B. stearothermophilus",
+        "temperatura":120,
+        "valorD":4.0,
+        "valorZ":5.0
+      },
+      {
+        "name":"C. jejuni",
+        "temperatura":50,
+        "valorD":0.88,
+        "valorZ":6.0
+      },
+      {
+        "name":"Cl. perfringens",
+        "temperatura":100,
+        "valorD":0.3,
+        "valorZ":3.8
+      },
+      {
+        "name":"Cl. botulinum",
+        "temperatura":121,
+        "valorD":0.21,
+        "valorZ":10
+      },
+      {
+        "name":"Cl. thermosaccharlyticum",
+        "temperatura":120,
+        "valorD":3,
+        "valorZ":7.2
+      },
+      {
+        "name":"E. coli 0157:H7",
+        "temperatura":62.8,
+        "valorD":0.47,
+        "valorZ":4.65
+      },
+      {
+        "name":"L. monocytogenes",
+        "temperatura":62,
+        "valorD":2.9,
+        "valorZ":5.98
+      },
+      {
+        "name":"S. entenerides",
+        "temperatura":32.8,
+        "valorD":0.06,
+        "valorZ":3.3
+      },
+      {
+        "name":"St. Aureus (destrucción de la toxina)",
+        "temperatura":98.9,
+        "valorD":120,
+        "valorZ":27.8
+      },
+      {
+        "name":"Streptococcus Grupo D",
+        "temperatura":70,
+        "valorD":2.95,
+        "valorZ":10
+      },
+      {
+        "name":"Y. enterocolitica",
+        "temperatura":60.0,
+        "valorD":0.4,
+        "valorZ":4.0
+      },
+      {
+        "name":"Sac. cerevisiae",
+        "temperatura":60,
+        "valorD":22.5,
+        "valorZ":5.5
+      },
+      {
+        "name":"Y. enterocolitica",
+        "temperatura":60,
+        "valorD":0.4,
+        "valorZ":3.9
+      }
+
+    ] 
+  }
+  $(document).ready(function(){
+    var tablaMicroorganismos = $('#table_microorganismos').DataTable({
+          select: true,
+          data: Microorganismos["data"],
+          columns: [
+              { data: 'name' },
+              { data: 'temperatura' },
+              { data: 'valorD' },
+              { data: 'valorZ' }
+          ]
+      });
+      $('#table_microorganismos tbody').on('click', 'tr', function () {
+        var data = tablaMicroorganismos.row( this ).data();
+        $('#micro_text').val(data["name"]);
+    } );
+
+  });
 	function myFunction(){
 	var deltah = new Number($("#deltah").val());
 	var up = new Number($("#up").val());
@@ -164,10 +287,30 @@
         $("#alpha").val("");
         $("#deltat").val("");
 	}
+
+  function myDensidadFunction(){
+    var temperatura = new Number($("#temperatura").val());
+    var constituyente = new String($("#constituyente").val());
+    var densidad;
+    if (constituyente === "agua"){
+      densidad = (997.18) + (3.1439*Math.pow(10,-3))*(temperatura)-(3.7574*Math.pow(10,-3))*(Math.pow(temperatura,2));
+    } else if (constituyente === "proteina"){
+      densidad = (1329.9) - (5.1840*Math.pow(10,-1))*(temperatura);
+    } else if (constituyente === "grasa"){
+      densidad = (925.59) - (4.1757*Math.pow(10,-1))*(temperatura);
+    } else if (constituyente === "carbohidratos"){
+      densidad = (1599.1) - (3.6589*Math.pow(10,-1))*(temperatura);
+    } else if (constituyente === "fibra"){
+      densidad = (1311.5) - (3.6589*Math.pow(10,-1))*(temperatura);
+    } else {
+      densidad = (2423.8) - (2.8063*Math.pow(10,-1))*(temperatura);
+    }
+    $("#densidad").val(densidad);
+  }
   </script>
 
 </head>
-<body onload="init()">
+<body>
     <div class="container" align="center">
         <h1>Socrates Palacios Ponce</h1>
     </div>
@@ -225,20 +368,51 @@
     <hr>
     <div class="container" align="center">
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#home">Escenario 1</a></li>
-            <li><a data-toggle="tab" href="#menu1">Escenario 2</a></li>
+            <li class="active"><a data-toggle="tab" href="#home">Densidad</a></li>
+            <li><a data-toggle="tab" href="#menu1">Microorganismos</a></li>
             <li><a data-toggle="tab" href="#menu2">Escenario 3</a></li>
             <li><a data-toggle="tab" href="#menu3">Escenario 4</a></li>
         </ul>
           
         <div class="tab-content">
             <div id="home" class="tab-pane fade in active">
-              <h3>HOME</h3>
-              <p>Some content.</p>
+              <h3>Densidad</h3>
+              <p>Densidades de las principales constituyentes de los
+                alimentos y su dependencia de la temperatura.</p>
+                <div class="row">
+                  <label for="constituyente">Escoja constituyente:</label>
+                  <select name="constituyente" id="constituyente">
+                    <option value="agua">Agua</option>
+                    <option value="proteina">Proteína</option>
+                    <option value="grasa">Grasa</option>
+                    <option value="carbohidratos">Carbohidratos</option>
+                    <option value="fibra">Fibra</option>
+                    <option value="ceniza">Ceniza</option>
+                  </select>
+                  <label for="temperatura">Temperatura:</label>
+                  <input id="temperatura" type="number" step=".01">
+                </div>
+                <div class="row">
+                  <button type="button" class="btn btn-info" onclick="myDensidadFunction()">Calcular Densidad</button>
+                  <label for="densidad">Densidad:</label>
+                  <input id="densidad" type="number" value="0.00" step=".01">
+                </div>
             </div>
             <div id="menu1" class="tab-pane fade">
-              <h3>Menu 1</h3>
-              <p>Some content in menu 1.</p>
+              <h3>Microorganismos</h3>
+              <div id="events">
+                <input type="text" id="micro_text" placeholder="Microorganismo">
+              </div>
+              <table id="table_microorganismos" style="width:100%">
+                <thead style="text-align:center">
+                  <tr>
+                    <th>Nombre Microorganismo</th>
+                    <th>Temperatura (ºC)</th>
+                    <th>Valor D (min)</th>
+                    <th>Valor Z (ºC)</th>
+                  </tr>
+                </thead>
+              </table>
             </div>
             <div id="menu2" class="tab-pane fade">
               <h3>Menu 2</h3>
