@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Socrates Palacios</title>
+  <title>Discretización - Envase de hojalata</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -143,7 +143,7 @@
     function load() {
       myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
     }
-  var d_text, no_text, n_text, f_text, temperatura, constituyente, densidad, k_text, cp, beta, alpha;
+  var d_text, no_text, n_text, f_text, temperatura, constituyente, densidad, k_text, cp, beta, alpha, s_text, fx_text;
   var Microorganismos = {
     "data":[
       {
@@ -302,6 +302,17 @@
         $("#f_text").val("");
 	}
 
+  function myFxFunction(){
+    s_text = new Number($("#s_text").val());
+    fx_text = d_text*s_text;
+    $("#fx_text").val(fx_text);
+  }
+
+  function myFxCleaningFunction(){
+        $("#s_text").val("");
+        $("#fx_text").val("");
+	}
+
   function myAlphaCleaningFunction(){
         $("#k_text").val("");
         $("#beta").val("");
@@ -340,45 +351,7 @@
 </head>
 <body>
     <div class="container" align="center">
-        <h1>Socrates Palacios Ponce</h1>
-    </div>
-    <hr>
-    <div class="container" align="center">
-        <div class="row">
-            <input type="number"  disabled>
-            <input type="number" disabled>
-            <input type="number" disabled>
-            <input type="number" disabled>
-            <input id="deltah" type="number" placeholder="Δh" step=".01">
-        </div>
-        <div class="row">
-            <input type="number" disabled>
-            <input type="number" disabled>
-            <input type="number" id="up" step=".01" placeholder="i,j-1">
-            <input type="number" disabled>
-            <input type="number" disabled>
-        </div>
-        <div class="row">
-            <input type="number" disabled>
-            <input type="number" id="left" step=".01" placeholder="i-1,j">
-            <input type="number" id="center" step=".01" placeholder="i,j">
-            <input type="number" id="right" step=".01" placeholder="i+1,j">
-            <input type="number" disabled>
-        </div>
-        <div class="row">
-            <input type="number" disabled>
-            <input type="number" disabled>
-            <input type="number" id="bottom" step=".01" placeholder="i,j+1">
-            <input type="number" disabled>
-            <input type="number" disabled>
-        </div>
-        <div class="row">
-            <input id="deltar" type="number" placeholder="Δr" step=".01">
-            <input type="number" disabled>
-            <input type="number" disabled>
-            <input type="number" disabled>
-            <input type="number" disabled>
-        </div>
+        <h1>Discretización - Envase de hojalata</h1>
     </div>
     <hr>
     <div class="container" align="center">
@@ -468,6 +441,12 @@
                   <label for="f_text" id="f_text_label">F :</label>
                   <input type="number" value="0.00" step=".01" id="f_text">
                 </div>
+                <div class="row">
+                  <label for="fx_text" id="f_text_label">Fx :</label>
+                  <input type="number" value="0.00" step=".01" id="fx_text">
+                  <button type="button" class="btn btn-info" onclick="myFxFunction()">Calcular</button>
+                  <button type="button" class="btn btn-light" onclick="myFxCleaningFunction()">Limpiar</button>
+                </div>
               </div>
               <hr>
               <table id="table_microorganismos" style="width:100%">
@@ -493,9 +472,44 @@
             </div>
             </div>
             <div id="menu3" class="tab-pane fade">
-                <h3>Menu 3</h3>
-                <p>Some content in menu 3.</p>
-              </div>
+              <div class="container" align="center">
+                <div class="row">
+                    <input type="number"  disabled>
+                    <input type="number" disabled>
+                    <input type="number" disabled>
+                    <input type="number" disabled>
+                    <input id="deltah" type="number" placeholder="Δh" step=".01">
+                </div>
+                <div class="row">
+                    <input type="number" disabled>
+                    <input type="number" disabled>
+                    <input type="number" id="up" step=".01" placeholder="i,j-1">
+                    <input type="number" disabled>
+                    <input type="number" disabled>
+                </div>
+                <div class="row">
+                    <input type="number" disabled>
+                    <input type="number" id="left" step=".01" placeholder="i-1,j">
+                    <input type="number" id="center" step=".01" placeholder="i,j">
+                    <input type="number" id="right" step=".01" placeholder="i+1,j">
+                    <input type="number" disabled>
+                </div>
+                <div class="row">
+                    <input type="number" disabled>
+                    <input type="number" disabled>
+                    <input type="number" id="bottom" step=".01" placeholder="i,j+1">
+                    <input type="number" disabled>
+                    <input type="number" disabled>
+                </div>
+                <div class="row">
+                    <input id="deltar" type="number" placeholder="Δr" step=".01">
+                    <input type="number" disabled>
+                    <input type="number" disabled>
+                    <input type="number" disabled>
+                    <input type="number" disabled>
+                </div>
+            </div>
+          </div>
         </div>
     </div>
 </body>
