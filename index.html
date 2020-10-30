@@ -16,7 +16,16 @@
   
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
-
+  <style> 
+    sub { 
+        vertical-align: sub; 
+        font-size: small; 
+    } 
+    sup { 
+        vertical-align: super; 
+        font-size: small; 
+    } 
+  </style> 
   <script id="code" type="text/javascript">
     function init() {
       var $ = go.GraphObject.make;  // for more concise visual tree definitions
@@ -134,7 +143,7 @@
     function load() {
       myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
     }
-	
+  var d_text, no_text, n_text, f_text, temperatura, constituyente, densidad, k_text, cp, beta, alpha;
   var Microorganismos = {
     "data":[
       {
@@ -250,30 +259,22 @@
       $('#table_microorganismos tbody').on('click', 'tr', function () {
         var data = tablaMicroorganismos.row( this ).data();
         $('#micro_text').val(data["name"]);
+        $('#temp_text').val(data["temperatura"]);
+        $('#d_text').val(data["valorD"]);
+        $('#z_text').val(data["valorZ"]);
     } );
 
   });
 	function myFunction(){
-	var deltah = new Number($("#deltah").val());
-	var up = new Number($("#up").val());
-	var left = new Number($("#left").val());
-	var center = new Number($("#center").val());
+	  var deltah = new Number($("#deltah").val());
+	  var up = new Number($("#up").val());
+	  var left = new Number($("#left").val());
+	  var center = new Number($("#center").val());
     var right = new Number($("#right").val());
     var bottom = new Number($("#bottom").val());
     var deltar = new Number($("#deltar").val());
     var alpha = new Number($("#alpha").val());
     var deltar = new Number($("#deltar").val());
-  var masaPulpa = (pulpaRefinada*100)/porcentajeRendimientoRefinamientoEnfriamiento;
-  var frutaLavada = (masaPulpa*100)/porcentajeRendimientoDespulpado;
-  var kgFruta = (frutaLavada*100)/porcentajeRendimientoLavadoSeleccion;
-	$("#pulpaRefinada").val(pulpaRefinada.toFixed(2));
-	$("#mPulpaConcentrada").val(mPulpaConcentrada.toFixed(3));
-	$("#mAguaEvaporada").val(mAguaEvaporada.toFixed(3));
-	$("#mVaporDeAgua").val(mVaporDeAgua.toFixed(3));
-  $("#mAguaTorre").val(mAguaTorre.toFixed(3));
-  $("#masaPulpa").val(masaPulpa.toFixed(3));
-  $("#frutaLavada").val(frutaLavada.toFixed(3));
-  $("#kgFruta").val(kgFruta.toFixed(3));
 	}
 	
 	function myCleaningFunction(){
@@ -287,11 +288,38 @@
         $("#alpha").val("");
         $("#deltat").val("");
 	}
+  function myFoFunction(){
+    d_text = new Number($("#d_text").val());
+	  no_text = new Number($("#no_text").val());
+	  n_text = new Number($("#n_text").val());
+    f_text = d_text*(Math.log(no_text)-Math.log(n_text));
+    $("#f_text").val(f_text);
+  }
+
+  function myFoCleaningFunction(){
+        $("#no_text").val("");
+        $("#n_text").val("");
+        $("#f_text").val("");
+	}
+
+  function myAlphaCleaningFunction(){
+        $("#k_text").val("");
+        $("#beta").val("");
+        $("#cp").val("");
+        $("#alpha").val("");
+	}
+
+  function myAlphaFunction(){
+    k_text = new Number($("#k_text").val());
+	  cp = new Number($("#cp").val());
+	  beta = new Number($("#beta").val());
+    alpha = (k_text)/(cp*beta);
+    $("#alpha").val(alpha);
+	}
 
   function myDensidadFunction(){
-    var temperatura = new Number($("#temperatura").val());
-    var constituyente = new String($("#constituyente").val());
-    var densidad;
+    temperatura = new Number($("#temperatura").val());
+    constituyente = new String($("#constituyente").val());
     if (constituyente === "agua"){
       densidad = (997.18) + (3.1439*Math.pow(10,-3))*(temperatura)-(3.7574*Math.pow(10,-3))*(Math.pow(temperatura,2));
     } else if (constituyente === "proteina"){
@@ -354,19 +382,6 @@
     </div>
     <hr>
     <div class="container" align="center">
-        <div class="row">
-            <input id="alpha" type="number" placeholder="α" step=".01">
-        </div>
-        <div class="row">
-            <input id="deltat" type="number" placeholder="Δt" step=".01">
-        </div>
-        <div class="row">
-            <button type="button" class="btn btn-info">Calcular</button>
-            <button type="button" class="btn btn-light">Limpiar</button>
-        </div>
-    </div>
-    <hr>
-    <div class="container" align="center">
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#home">Densidad</a></li>
             <li><a data-toggle="tab" href="#menu1">Microorganismos</a></li>
@@ -376,7 +391,7 @@
           
         <div class="tab-content">
             <div id="home" class="tab-pane fade in active">
-              <h3>Densidad</h3>
+              <h3>Densidad  (Kg/m3)</h3>
               <p>Densidades de las principales constituyentes de los
                 alimentos y su dependencia de la temperatura.</p>
                 <div class="row">
@@ -392,17 +407,69 @@
                   <label for="temperatura">Temperatura:</label>
                   <input id="temperatura" type="number" step=".01">
                 </div>
-                <div class="row">
-                  <button type="button" class="btn btn-info" onclick="myDensidadFunction()">Calcular Densidad</button>
+                <div class="row">     
                   <label for="densidad">Densidad:</label>
                   <input id="densidad" type="number" value="0.00" step=".01">
+                </div>
+                <div class="row">
+                  <button type="button" class="btn btn-info" onclick="myDensidadFunction()">Calcular Densidad</button>
+                  <button type="button" class="btn btn-light">Limpiar</button>
+                </div>
+                <hr>
+                <h4>Densidad</h4>
+                <div class="row">  
+                  <label for="k_text">k:</label>
+                  <input id="k_text" type="number" value="0.00" step=".01">
+                  <label for="beta">β:</label>
+                  <input id="beta" type="number" value="0.00" step=".01">
+                  <label for="cp">Cp:</label>
+                  <input id="cp" type="number" value="0.00" step=".01">
+                </div>
+                <div class="row">
+                  <h4>Difusidad Térmica</h4>
+                  <label for="aplha">α:</label>
+                  <input id="alpha" type="number" step=".01">
+                </div>
+                <div class="row">
+                  <button type="button" class="btn btn-info" onclick="myAlphaFunction()" >Calcular α</button>
+                  <button type="button" class="btn btn-light" onclick="myAlphaCleaningFunction()">Limpiar</button>
                 </div>
             </div>
             <div id="menu1" class="tab-pane fade">
               <h3>Microorganismos</h3>
               <div id="events">
-                <input type="text" id="micro_text" placeholder="Microorganismo">
+                <div class="row">
+                  <input type="text" id="micro_text" placeholder="Microorganismo">
+                </div>
+                <div class="row">
+                    <h4>Constantes Cinéticas</h4>
+                    <label for="temp_text">Temperatura (ºC):</label>
+                    <input type="number" value="0.00" step=".01" id="temp_text">
+                    <label for="d_text">Valor D (min):</label>
+                    <input type="number" value="0.00" step=".01" id="d_text">
+                    <label for="z_text">Valor Z (ºC):</label>
+                    <input type="number" value="0.00" step=".01" id="z_text">
+                    <label for="s_text">Valor S:</label>
+                    <input type="number" value="0.00" step=".01" id="s_text">
+                </div>
+                <hr>
+                <div class="row">
+                  <h4>Proceso Deseado</h4>
+                    <label for="no_text">Población Inicial (No):</label>
+                    <input type="number" value="0.00" step=".01" id="no_text">
+                    <label for="n_text">Población Final (N):</label>
+                    <input type="number" value="0.00" step=".01" id="n_text">
+                    <button type="button" class="btn btn-info" onclick="myFoFunction()">Calcular</button>
+                    <button type="button" class="btn btn-light" onclick="myFoCleaningFunction()">Limpiar</button>
+                  </div>
+                <hr>
+                <div class="row">
+                  <h4>Tiempo de Muerte Térmica</h4>
+                  <label for="f_text" id="f_text_label">F :</label>
+                  <input type="number" value="0.00" step=".01" id="f_text">
+                </div>
               </div>
+              <hr>
               <table id="table_microorganismos" style="width:100%">
                 <thead style="text-align:center">
                   <tr>
@@ -415,8 +482,15 @@
               </table>
             </div>
             <div id="menu2" class="tab-pane fade">
-              <h3>Menu 2</h3>
-              <p>Some content in menu 2.</p>
+              <div class="container" align="center">
+                <div class="row">
+                    <input id="deltat" type="number" placeholder="Δt" step=".01">
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn-info">Calcular</button>
+                    <button type="button" class="btn btn-light">Limpiar</button>
+                </div>
+            </div>
             </div>
             <div id="menu3" class="tab-pane fade">
                 <h3>Menu 3</h3>
