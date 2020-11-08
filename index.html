@@ -147,8 +147,220 @@
       myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
     }
   var d_text, no_text, n_text, f_text, temperatura, constituyente, densidad, k_text, cp, beta, alpha, s_text, fx_text;
-  var g;
+  var g, codigo_text, diametro_text, radio_text, volumen_text, area_text;
   var x_i, densidad_i, calor_i, conductividad_i;
+  var EnvasesLata = [
+    {
+      "codigo":"202x109",
+      "diametro":52,
+      "radio":40
+    },
+    {
+      "codigo":"211x102",
+      "diametro":65,
+      "radio":28
+    },
+    {
+      "codigo":"202x204",
+      "diametro":52,
+      "radio":57
+    },
+    {
+      "codigo":"211x109",
+      "diametro":65,
+      "radio":40
+    },
+    {
+      "codigo":"300x108",
+      "diametro":73,
+      "radio":38
+    },
+    {
+      "codigo":"202x210",
+      "diametro":52,
+      "radio":73
+    },
+    {
+      "codigo":"211x200",
+      "diametro":65,
+      "radio":51
+    },
+    {
+      "codigo":"202x306",
+      "diametro":52,
+      "radio":85
+    },
+    {
+      "codigo":"202x314",
+      "diametro":52,
+      "radio":98
+    },
+    {
+      "codigo":"211x212",
+      "diametro":65,
+      "radio":69
+    },
+    {
+      "codigo":"300x205",
+      "diametro":73,
+      "radio":58
+    },
+    {
+      "codigo":"307x113",
+      "diametro":83,
+      "radio":46
+    },
+    {
+      "codigo":"300x208",
+      "diametro":73,
+      "radio":64
+    },
+    {
+      "codigo":"307x113",
+      "diametro":83,
+      "radio":51
+    },
+    {
+      "codigo":"211x300",
+      "diametro":65,
+      "radio":76
+    },
+    {
+      "codigo":"307x206",
+      "diametro":83,
+      "radio":60
+    },
+    {
+      "codigo":"211x400",
+      "diametro":65,
+      "radio":102
+    },
+    {
+      "codigo":"300x304",
+      "diametro":73,
+      "radio":82
+    },
+    {
+      "codigo":"300x308",
+      "diametro":73,
+      "radio":88
+    },
+    {
+      "codigo":"211x414",
+      "diametro":65,
+      "radio":124
+    },
+    {
+      "codigo":"401x205",
+      "diametro":99,
+      "radio":58
+    },
+    {
+      "codigo":"300x402",
+      "diametro":73,
+      "radio":105
+    },
+    {
+      "codigo":"300x404",
+      "diametro":73,
+      "radio":107
+    },
+    {
+      "codigo":"307x306",
+      "diametro":83,
+      "radio":86
+    },
+    {
+      "codigo":"401x208",
+      "diametro":99,
+      "radio":64
+    },
+    {
+      "codigo":"211x510",
+      "diametro":65,
+      "radio":143
+    },
+    {
+      "codigo":"300x407",
+      "diametro":73,
+      "radio":113
+    },
+    {
+      "codigo":"307x309",
+      "diametro":83,
+      "radio":91
+    },
+    {
+      "codigo":"401x211",
+      "diametro":99,
+      "radio":68
+    },
+    {
+      "codigo":"303x406",
+      "diametro":78,
+      "radio":111
+    },
+    {
+      "codigo":"307x409",
+      "diametro":83,
+      "radio":116
+    },
+    {
+      "codigo":"307x509",
+      "diametro":83,
+      "radio":140
+    },
+    {
+      "codigo":"401x400",
+      "diametro":99,
+      "radio":102
+    },
+    {
+      "codigo":"401x512",
+      "diametro":99,
+      "radio":146
+    },
+    {
+      "codigo":"401x411",
+      "diametro":99,
+      "radio":119
+    },
+    {
+      "codigo":"404x502",
+      "diametro":105,
+      "radio":129
+    },
+    {
+      "codigo":"404x700",
+      "diametro":105,
+      "radio":178
+    },
+    {
+      "codigo":"502x512",
+      "diametro":127,
+      "radio":156
+    },
+    {
+      "codigo":"603x400",
+      "diametro":153,
+      "radio":101
+    },
+    {
+      "codigo":"603x600",
+      "diametro":153,
+      "radio":152
+    },
+    {
+      "codigo":"603x700",
+      "diametro":153,
+      "radio":178
+    },
+    {
+      "codigo":"603x908",
+      "diametro":153,
+      "radio":241
+    }
+  ];
   var Microorganismos = {
     "data":[
       {
@@ -268,7 +480,28 @@
         $('#d_text').val(data["valorD"]);
         $('#z_text').val(data["valorZ"]);
     } );
-
+    var tablaEnvases = $('#table_envases').DataTable({
+          select: true,
+          data: EnvasesLata,
+          columns: [
+              { data: 'codigo' },
+              { data: 'diametro' },
+              { data: 'radio' }
+          ]
+      });
+      $('#table_envases tbody').on('click', 'tr', function () {
+        var data = tablaEnvases.row( this ).data();
+        codigo_text = data["codigo"];
+        diametro_text = data["diametro"];
+        radio_text = data["radio"];
+        $('#codigo_text').val(codigo_text);
+        $('#diametro_text').val(diametro_text);
+        $('#radio_text').val(radio_text);
+        volumen_text = volumen(diametro_text, radio_text);
+        area_text = area(diametro_text);
+        $('#volumen_text').val(volumen_text);
+        $('#area_text').val(area_text);
+    } );
   });
 	function myFunction(){
 	  var deltah = new Number($("#deltah").val());
@@ -450,6 +683,13 @@
     $("#f_text").val(f_text);
   }
 
+  function volumen(diametro, altura){
+    return area(diametro)*altura;
+  }
+
+  function area(diametro){
+    return Math.PI*Math.pow(diametro/2,2);
+  }
   function myFoCleaningFunction(){
         $("#no_text").val("");
         $("#n_text").val("");
@@ -484,6 +724,7 @@
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#home">Propiedades Térmicas</a></li>
             <li><a data-toggle="tab" href="#menu1">Microorganismos</a></li>
+            <li><a data-toggle="tab" href="#envases">Latas cilíndricas</a></li>
             <li><a data-toggle="tab" href="#menu2">Escenario 3</a></li>
             <li><a data-toggle="tab" href="#menu3">Escenario 4</a></li>
         </ul>
@@ -651,6 +892,35 @@
                     <button type="button" class="btn btn-light">Limpiar</button>
                 </div>
             </div>
+            </div>
+            <div id="envases" class="tab-pane fade">
+              <div class="container" align="center">
+                <h4>Dimensiones de latas cilíndricas</h4>
+                <div class="row">
+                  <label for="codigo_text">Código USA:</label>
+                  <input type="text" id="codigo_text">
+                  <label for="diametro_text">Diámetro (mm):</label>
+                  <input type="number" value="0.00" step=".01" id="diametro_text">
+                  <label for="radio_text">Altura (mm):</label>
+                  <input type="number" value="0.00" step=".01" id="radio_text">
+                </div>
+                <div class="row">
+                  <label for="volumen_text">Volumen:</label>
+                  <input type="number" value="0.00" step=".01" id="volumen_text">
+                  <label for="area_text">Área:</label>
+                  <input type="number" value="0.00" step=".01" id="area_text">
+                </div>
+                <hr>
+                <table id="table_envases" style="width:100%">
+                  <thead style="text-align:center">
+                    <tr>
+                      <th>Código USA</th>
+                      <th>Diámetro (mm)</th>
+                      <th>Altura (mm)</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
             </div>
             <div id="menu3" class="tab-pane fade">
               <div class="container" align="center">
