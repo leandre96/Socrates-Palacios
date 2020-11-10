@@ -561,7 +561,7 @@
   function tablaConductividad(){
     var agua = (0.57109) + (1.762*Math.pow(10,-3)*temperatura) - ((6.7036*Math.pow(10,-6))*(Math.pow(temperatura,2)));
     var proteina = (0.17881) + (1.1958*Math.pow(10,-3)*temperatura) - ((2.7178*Math.pow(10,-6))*(Math.pow(temperatura,2)));
-    var grasa = (0.18071) - (2.7604*Math.pow(10,-4)*temperatura) - ((1.7749*Math.pow(10,-7))*(Math.pow(temperatura,2)));
+    var grasa = (0.18071) - (2.7604*Math.pow(10,-3)*temperatura) - ((1.7749*Math.pow(10,-7))*(Math.pow(temperatura,2)));
     var carbohidratos = (0.20141) + (1.3874*Math.pow(10,-3)*temperatura) - ((4.3312*Math.pow(10,-6))*(Math.pow(temperatura,2)));
     var fibra = (0.18331) + (1.2497*Math.pow(10,-3)*temperatura) - ((3.1683*Math.pow(10,-6))*(Math.pow(temperatura,2)));
     var ceniza = (0.32961) + (1.4011*Math.pow(10,-3)*temperatura) - ((2.9069*Math.pow(10,-6))*(Math.pow(temperatura,2)));
@@ -584,12 +584,12 @@
   function PrimaryFunction(){
     temperatura = new Number($("#temperatura").val());
     x_i = [
-     new Number($("#agua_xi").val()),
-     new Number($("#proteina_xi").val()),
-     new Number($("#grasa_xi").val()),
-     new Number($("#carbohidratos_xi").val()),
-     new Number($("#fibra_xi").val()),
-     new Number($("#ceniza_xi").val())
+     new Number($("#agua_xi").val())/100,
+     new Number($("#proteina_xi").val())/100,
+     new Number($("#grasa_xi").val())/100,
+     new Number($("#carbohidratos_xi").val())/100,
+     new Number($("#fibra_xi").val())/100,
+     new Number($("#ceniza_xi").val())/100
     ];
     tablaDensidad();
     tablaCalor();
@@ -649,7 +649,7 @@
     $("#carbohidratos_xi").val("");
     $("#fibra_xi").val("");
     $("#ceniza_xi").val("");
-    $("#g_text").val("");
+    $("#g_text").val("0.00");
     $("#conductividad_agua").val("");
     $("#conductividad_proteina").val("");
     $("#conductividad_grasa").val("");
