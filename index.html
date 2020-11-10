@@ -476,9 +476,9 @@
       $('#table_microorganismos tbody').on('click', 'tr', function () {
         var data = tablaMicroorganismos.row( this ).data();
         $('#micro_text').val(data["name"]);
-        $('#temp_text').val(data["temperatura"]);
-        $('#d_text').val(data["valorD"]);
-        $('#z_text').val(data["valorZ"]);
+        $('#temp_text').val(data["temperatura"].toFixed(3));
+        $('#d_text').val(data["valorD"].toFixed(3));
+        $('#z_text').val(data["valorZ"].toFixed(3));
     } );
     var tablaEnvases = $('#table_envases').DataTable({
           select: true,
@@ -494,13 +494,13 @@
         codigo_text = data["codigo"];
         diametro_text = data["diametro"];
         radio_text = data["radio"];
-        $('#codigo_text').val(codigo_text);
-        $('#diametro_text').val(diametro_text);
-        $('#radio_text').val(radio_text);
+        $('#codigo_text').val(codigo_text.toFixed(3));
+        $('#diametro_text').val(diametro_text.toFixed(3));
+        $('#radio_text').val(radio_text.toFixed(3));
         volumen_text = volumen(diametro_text, radio_text);
         area_text = area(diametro_text);
-        $('#volumen_text').val(volumen_text);
-        $('#area_text').val(area_text);
+        $('#volumen_text').val(volumen_text.toFixed(3));
+        $('#area_text').val(area_text.toFixed(3));
     } );
   });
 	function myFunction(){
@@ -529,12 +529,12 @@
       fibra,
       ceniza
     ];
-    $("#densidad_agua").val(agua);
-    $("#densidad_proteina").val(proteina);
-    $("#densidad_grasa").val(grasa);
-    $("#densidad_carbohidratos").val(carbohidratos);
-    $("#densidad_fibra").val(fibra);
-    $("#densidad_ceniza").val(ceniza);
+    $("#densidad_agua").val(agua.toFixed(3));
+    $("#densidad_proteina").val(proteina.toFixed(3));
+    $("#densidad_grasa").val(grasa.toFixed(3));
+    $("#densidad_carbohidratos").val(carbohidratos.toFixed(3));
+    $("#densidad_fibra").val(fibra.toFixed(3));
+    $("#densidad_ceniza").val(ceniza.toFixed(3));
   }
   function tablaCalor(){
     var agua = (4176.2) - (0.0909*temperatura)+((5.4731*Math.pow(10,-3))*(Math.pow(temperatura,2)));
@@ -551,12 +551,12 @@
       fibra,
       ceniza
     ];
-    $("#calor_agua").val(agua);
-    $("#calor_proteina").val(proteina);
-    $("#calor_grasa").val(grasa);
-    $("#calor_carbohidratos").val(carbohidratos);
-    $("#calor_fibra").val(fibra);
-    $("#calor_ceniza").val(ceniza);
+    $("#calor_agua").val(agua.toFixed(3));
+    $("#calor_proteina").val(proteina.toFixed(3));
+    $("#calor_grasa").val(grasa.toFixed(3));
+    $("#calor_carbohidratos").val(carbohidratos.toFixed(3));
+    $("#calor_fibra").val(fibra.toFixed(3));
+    $("#calor_ceniza").val(ceniza.toFixed(3));
   }
   function tablaConductividad(){
     var agua = (0.57109) + (1.762*Math.pow(10,-3)*temperatura) - ((6.7036*Math.pow(10,-6))*(Math.pow(temperatura,2)));
@@ -573,12 +573,12 @@
       fibra,
       ceniza
     ];
-    $("#conductividad_agua").val(agua);
-    $("#conductividad_proteina").val(proteina);
-    $("#conductividad_grasa").val(grasa);
-    $("#conductividad_carbohidratos").val(carbohidratos);
-    $("#conductividad_fibra").val(fibra);
-    $("#conductividad_ceniza").val(ceniza);
+    $("#conductividad_agua").val(agua.toFixed(3));
+    $("#conductividad_proteina").val(proteina.toFixed(3));
+    $("#conductividad_grasa").val(grasa.toFixed(3));
+    $("#conductividad_carbohidratos").val(carbohidratos.toFixed(3));
+    $("#conductividad_fibra").val(fibra.toFixed(3));
+    $("#conductividad_ceniza").val(ceniza.toFixed(3));
     g = new Number($("#g_text").val());
   }
   function PrimaryFunction(){
@@ -596,10 +596,10 @@
     tablaConductividad();
     cp = sumatoria(x_i,calor_i);
     console.log(cp);
-    $("#cp").val(cp);
+    $("#cp").val(cp.toFixed(3));
     beta = sumatoria(x_i,densidad_i);
     console.log(beta);
-    $("#beta").val(beta);
+    $("#beta").val(beta.toFixed(3));
     myKFunction();
     myAlphaFunction();
   }
@@ -630,7 +630,7 @@
     }
     k_perpendicular = 1/sum;
     k_text = (g*k_perpendicular) + ((1 - g)*k_paralelo);
-    $("#k_text").val(k_text);
+    $("#k_text").val(k_text.toFixed(3));
   }
 
   function myPrimaryCleaningFunction(){
@@ -656,12 +656,12 @@
     $("#conductividad_carbohidratos").val("");
     $("#conductividad_fibra").val("");
     $("#conductividad_ceniza").val("");
-    $("#densidad_agua").val("");
-    $("#densidad_proteina").val("");
-    $("#densidad_grasa").val("");
-    $("#densidad_carbohidratos").val("");
-    $("#densidad_fibra").val("");
-    $("#densidad_ceniza").val("");
+    $("#calor_agua").val("");
+    $("#calor_proteina").val("");
+    $("#calor_grasa").val("");
+    $("#calor_carbohidratos").val("");
+    $("#calor_fibra").val("");
+    $("#calor_ceniza").val("");
     $("#temperatura").val("");
   }
 	function myCleaningFunction(){
@@ -680,7 +680,7 @@
 	  no_text = new Number($("#no_text").val());
 	  n_text = new Number($("#n_text").val());
     f_text = d_text*(Math.log(no_text)-Math.log(n_text));
-    $("#f_text").val(f_text);
+    $("#f_text").val(f_text.toFixed(3));
   }
 
   function volumen(diametro, altura){
@@ -699,7 +699,7 @@
   function myFxFunction(){
     s_text = new Number($("#s_text").val());
     fx_text = d_text*s_text;
-    $("#fx_text").val(fx_text);
+    $("#fx_text").val(fx_text.toFixed(3));
   }
 
   function myFxCleaningFunction(){
@@ -710,7 +710,7 @@
   function myAlphaFunction(){
     alpha = (k_text)/(cp*beta);
     console.log(alpha);
-    $("#alpha").val(alpha);
+    $("#alpha").val(alpha.toFixed(6));
 	}
   </script>
 
@@ -734,26 +734,27 @@
               <h3>Densidad  (Kg/m3)</h3>
               <p>Densidades de las principales constituyentes de los
                 alimentos y su dependencia de la temperatura.</p>
-                <div class="row">
-                  <label for="temperatura">Temperatura:</label>
-                  <input id="temperatura" type="number" step=".01" value="0.00">
-                  <label for="g_text">Grado de libertad:</label>
-                  <input id="g_text" type="number" step=".01" value="0.00" min="0" max="1">
-                </div>
+                  <div class="row">
+                      <label for="temperatura">Temperatura:</label>
+                        <input id="temperatura" type="number" step=".01" value="0.00">
+                        <span>[°C]</span>
+                      <label for="g_text">Grado de libertad:</label>
+                      <input id="g_text" type="number" step=".01" value="0.00" min="0" max="1">
+                  </div>
                 <div class="row">     
-                  <label for="agua_xi">Porcentaje de agua:</label>
+                  <label for="agua_xi">% H20:</label>
                   <input id="agua_xi" type="number" value="0.00" step=".01">
-                  <label for="proteina_xi">Porcentaje de proteína:</label>
+                  <label for="proteina_xi">% Proteína:</label>
                   <input id="proteina_xi" type="number" value="0.00" step=".01">
-                  <label for="grasa_xi">Porcentaje de grasa:</label>
+                  <label for="grasa_xi">% Grasa:</label>
                   <input id="grasa_xi" type="number" value="0.00" step=".01">
                 </div>
                 <div class="row">     
-                  <label for="carbohidratos_xi">Porcentaje de carbohidratos:</label>
+                  <label for="carbohidratos_xi">% CHo:</label>
                   <input id="carbohidratos_xi" type="number" value="0.00" step=".01">
-                  <label for="fibra_xi">Porcentaje de fibra:</label>
+                  <label for="fibra_xi">% Fibra:</label>
                   <input id="fibra_xi" type="number" value="0.00" step=".01">
-                  <label for="ceniza_xi">Porcentaje de ceniza:</label>
+                  <label for="ceniza_xi">% Ceniza:</label>
                   <input id="ceniza_xi" type="number" value="0.00" step=".01">
                 </div>
                 <div class="row">
@@ -761,7 +762,7 @@
                   <button type="button" class="btn btn-light" onclick="myPrimaryCleaningFunction()">Limpiar</button>
                 </div>
                 <hr>
-                <h4>Densidades</h4>
+                <h4>Densidades [Kg/m³]</h4>
                 <div class="row">     
                   <label for="densidad_agua">Agua:</label>
                   <input id="densidad_agua" type="number" value="0.00" step=".01">
@@ -779,7 +780,7 @@
                   <input id="densidad_ceniza" type="number" value="0.00" step=".01">
                 </div>
                 <hr>
-                <h4>Calores específicos</h4>
+                <h4>Calores específicos [J/Kg°C]</h4>
                 <div class="row">     
                   <label for="calor_agua">Agua:</label>
                   <input id="calor_agua" type="number" value="0.00" step=".01">
@@ -797,7 +798,7 @@
                   <input id="calor_ceniza" type="number" value="0.00" step=".01">
                 </div>
                 <hr>
-                <h4>Conductividades térmicas</h4>
+                <h4>Conductividades térmicas [W/m°C]</h4>
                 <div class="row">     
                   <label for="conductividad_agua">Agua:</label>
                   <input id="conductividad_agua" type="number" value="0.00" step=".01">
@@ -815,19 +816,22 @@
                   <input id="conductividad_ceniza" type="number" value="0.00" step=".01">
                 </div>
                 <hr>
-                <h4>Densidad</h4>
                 <div class="row">  
                   <label for="k_text">k:</label>
                   <input id="k_text" type="number" value="0.00" step=".01">
+                  <span>[W/m°C]</span>
                   <label for="beta">β:</label>
                   <input id="beta" type="number" value="0.00" step=".01">
+                  <span>[Kg/m³]</span>
                   <label for="cp">Cp:</label>
                   <input id="cp" type="number" value="0.00" step=".01">
+                  <span>[J/Kg°C]</span>
                 </div>
                 <div class="row">
                   <h4>Difusidad Térmica</h4>
                   <label for="aplha">α:</label>
                   <input id="alpha" type="number" value="0.00" step=".01">
+                  <span>[㎡/s]</span>
                 </div>
             </div>
             <div id="menu1" class="tab-pane fade">
