@@ -663,6 +663,7 @@
     $("#calor_fibra").val("");
     $("#calor_ceniza").val("");
     $("#temperatura").val("");
+    $("#alpha").val("");
   }
 	function myCleaningFunction(){
         $("#deltah").val("");
@@ -710,7 +711,14 @@
   function myAlphaFunction(){
     alpha = (k_text)/(cp*beta);
     console.log(alpha);
-    $("#alpha").val(alpha.toFixed(6));
+    const delimitador = ' x 10^';
+    const punto = '.';
+    var notacionCientifica = alpha.toExponential().replace(/e\+?/, delimitador);
+    var tokens_List = notacionCientifica.split(delimitador);
+    var coeficiente = tokens_List[0].split(punto);
+    var decimales = coeficiente[1].slice(0,4);
+    //$("#alpha").val(coeficiente+delimitador+tokens_List[1]);
+    $("#alpha").val(coeficiente[0]+punto+decimales+delimitador+tokens_List[1]);
 	}
   </script>
 
@@ -731,9 +739,7 @@
           
         <div class="tab-content">
             <div id="home" class="tab-pane fade in active">
-              <h3>Densidad  (Kg/m3)</h3>
-              <p>Densidades de las principales constituyentes de los
-                alimentos y su dependencia de la temperatura.</p>
+              <p>Propiedades tèrmicas de los principales constituyentes de un alimento.</p>
                   <div class="row">
                       <label for="temperatura">Temperatura:</label>
                         <input id="temperatura" type="number" step=".01" value="0.00">
@@ -830,7 +836,7 @@
                 <div class="row">
                   <h4>Difusidad Térmica</h4>
                   <label for="aplha">α:</label>
-                  <input id="alpha" type="number" value="0.00" step=".01">
+                  <input id="alpha" type="text">
                   <span>[㎡/s]</span>
                 </div>
             </div>
