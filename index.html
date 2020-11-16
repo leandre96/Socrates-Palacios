@@ -147,8 +147,9 @@
       myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
     }
   var d_text, no_text, n_text, f_text, temperatura, constituyente, densidad, k_text, cp, beta, alpha, s_text, fx_text;
-  var g, codigo_text, diametro_text, radio_text, volumen_text, area_text;
-  var x_i, densidad_i, calor_i, conductividad_i;
+  var g, codigo_text, diametro_text, radio_text, volumen_text, area_text, letalidad_text, vs_text2, temp_text2, dw_text, f_text2;
+  var x_i, densidad_i, calor_i, conductividad_i, conductividad_biot_text, calor_biot_text, biot_text, temp_text, z_text;
+  var ft_text, temp_text3, f_text3; 
   var EnvasesLata = [
     {
       "codigo":"202x109",
@@ -475,6 +476,9 @@
       });
       $('#table_microorganismos tbody').on('click', 'tr', function () {
         var data = tablaMicroorganismos.row( this ).data();
+        d_text = data["valorD"];
+        temp_text = data["temperatura"];
+        z_text = data["valorZ"];
         $('#micro_text').val(data["name"]);
         $('#temp_text').val(data["temperatura"].toFixed(3));
         $('#d_text').val(data["valorD"].toFixed(3));
@@ -494,13 +498,15 @@
         codigo_text = data["codigo"];
         diametro_text = data["diametro"];
         radio_text = data["radio"];
-        $('#codigo_text').val(codigo_text.toFixed(3));
+        $('#codigo_text').val(codigo_text);
         $('#diametro_text').val(diametro_text.toFixed(3));
         $('#radio_text').val(radio_text.toFixed(3));
         volumen_text = volumen(diametro_text, radio_text);
-        area_text = area(diametro_text);
+        area_text = areaTotal(diametro_text, radio_text);
+        letalidad_text = volumen_text/area_text;
         $('#volumen_text').val(volumen_text.toFixed(3));
         $('#area_text').val(area_text.toFixed(3));
+        $('#letalidad_text').val(letalidad_text.toFixed(3));
     } );
   });
 	function myFunction(){
@@ -677,10 +683,14 @@
         $("#deltat").val("");
 	}
   function myFoFunction(){
-    d_text = new Number($("#d_text").val());
+    //d_text = new Number($("#d_text").val());
 	  no_text = new Number($("#no_text").val());
 	  n_text = new Number($("#n_text").val());
-    f_text = d_text*(Math.log(no_text)-Math.log(n_text));
+    var primerLogaritmo = Math.log10(Math.pow(10,no_text));
+    console.log(primerLogaritmo);
+    var segundoLogaritmo = Math.log10(Math.pow(10,n_text));
+    console.log(segundoLogaritmo);
+    f_text = d_text*(primerLogaritmo- segundoLogaritmo);
     $("#f_text").val(f_text.toFixed(3));
   }
 
@@ -691,12 +701,52 @@
   function area(diametro){
     return Math.PI*Math.pow(diametro/2,2);
   }
+
+  function areaTotal(diametro, altura){
+    return (2*area(diametro))+(Math.PI*(diametro)*altura)
+  }
   function myFoCleaningFunction(){
         $("#no_text").val("");
         $("#n_text").val("");
         $("#f_text").val("");
 	}
-
+  function myF1Function(){
+    temp_text2 = new Number($("#temp_text2").val());
+    //d_text = new Number($("#d_text").val());
+    dw_text = d_text*(Math.pow(10,-((temp_text2 - temp_text)/z_text)));
+    $("#dw_text").val(dw_text.toFixed(3));
+    vs_text2 = new Number($("#vs_text2").val());
+    f_text2 = vs_text2*dw_text;
+    $("#f_text2").val(f_text2.toFixed(3));
+  }
+  function myF1CleaningFunction(){
+    $("#temp_text2").val("");
+    $("#dw_text").val("");
+    $("#vs_text2").val("");
+    $("#f_text2").val("");
+  }
+  function myF3Function(){
+    ft_text = new Number($("#ft_text").val());
+    temp_text3 = new Number($("#temp_text3").val());
+    f_text3 = (ft_text)*(Math.pow(10,((temp_text3 - temp_text)/z_text)));
+    $("#f_text3").val(f_text3);
+  }
+  function myF3CleaningFunction(){
+    $("#ft_text").val("");
+    $("#temp_text3").val("");
+    $("#f_text3").val("");
+  }
+  function NumeroBiot(){
+    conductividad_biot_text = new Number($("#conductividad_biot_text").val());
+    calor_biot_text= new Number($("#calor_biot_text").val());
+    biot_text = (calor_biot_text*letalidad_text)/conductividad_biot_text;
+    $("#biot_text").val(biot_text);
+  }
+  function CleaningNumeroBiot(){
+    $("#conductividad_biot_text").val("");
+    $("#calor_biot_text").val("");
+    $("#biot_text").val("");
+  }
   function myFxFunction(){
     s_text = new Number($("#s_text").val());
     fx_text = d_text*s_text;
@@ -764,7 +814,7 @@
                   <input id="ceniza_xi" type="number" value="0.00" step=".01">
                 </div>
                 <div class="row">
-                  <button type="button" class="btn btn-info" onclick="PrimaryFunction()">Calcular Densidad</button>
+                  <button type="button" class="btn btn-info" onclick="PrimaryFunction()">Calcular</button>
                   <button type="button" class="btn btn-light" onclick="myPrimaryCleaningFunction()">Limpiar</button>
                 </div>
                 <hr>
@@ -826,7 +876,7 @@
                   <label for="k_text">k:</label>
                   <input id="k_text" type="number" value="0.00" step=".01">
                   <span>[W/m°C]</span>
-                  <label for="beta">β:</label>
+                  <label for="beta">ρ:</label>
                   <input id="beta" type="number" value="0.00" step=".01">
                   <span>[Kg/m³]</span>
                   <label for="cp">Cp:</label>
@@ -854,8 +904,6 @@
                     <input type="number" value="0.00" step=".01" id="d_text">
                     <label for="z_text">Valor Z (ºC):</label>
                     <input type="number" value="0.00" step=".01" id="z_text">
-                    <label for="s_text">Valor S:</label>
-                    <input type="number" value="0.00" step=".01" id="s_text">
                 </div>
                 <hr>
                 <div class="row">
@@ -864,20 +912,57 @@
                     <input type="number" value="0.00" step=".01" id="no_text">
                     <label for="n_text">Población Final (N):</label>
                     <input type="number" value="0.00" step=".01" id="n_text">
-                    <button type="button" class="btn btn-info" onclick="myFoFunction()">Calcular</button>
-                    <button type="button" class="btn btn-light" onclick="myFoCleaningFunction()">Limpiar</button>
-                  </div>
+                </div>
+                <div class="row">
+                  <label for="f_text" id="f_text_label">Carga microbiaria :</label>
+                  <input type="number" value="0.00" step=".01" id="f_text">
+                  <button type="button" class="btn btn-info" onclick="myFoFunction()">Calcular</button>
+                  <button type="button" class="btn btn-light" onclick="myFoCleaningFunction()">Limpiar</button>
+                </div>
                 <hr>
                 <div class="row">
                   <h4>Tiempo de Muerte Térmica</h4>
-                  <label for="f_text" id="f_text_label">Carga microbiaria :</label>
-                  <input type="number" value="0.00" step=".01" id="f_text">
+                </div>
+                <div class="row">
+                  <label for="s_text">Valor S:</label>
+                  <input type="number" value="0.00" step=".01" id="s_text">
                 </div>
                 <div class="row">
                   <label for="fx_text" id="f_text_label">Vs :</label>
                   <input type="number" value="0.00" step=".01" id="fx_text">
                   <button type="button" class="btn btn-info" onclick="myFxFunction()">Calcular</button>
                   <button type="button" class="btn btn-light" onclick="myFxCleaningFunction()">Limpiar</button>
+                </div>
+                <hr>
+                <div class="row">
+                  <label for="vs_text2" >Vs :</label>
+                  <input type="number" value="0.00" step=".01" id="vs_text2">
+                  <label for="temp_text2" >Temperatura :</label>
+                  <input type="number" value="0.00" step=".01" id="temp_text2">
+                  <span>[°C]</span>
+                </div>
+                <div class="row">
+                  <label for="dw_text" >Dw :</label>
+                  <input type="number" value="0.00" step=".01" id="dw_text">
+                  <span>[min]</span>
+                  <label for="f_text2" >F1 :</label>
+                  <input type="number" value="0.00" step=".01" id="f_text2">
+                  <button type="button" class="btn btn-info" onclick="myF1Function()">Calcular</button>
+                  <button type="button" class="btn btn-light" onclick="myF1CleaningFunction()">Limpiar</button>
+                </div>
+                <hr>
+                <div class="row">
+                  <label for="ft_text" >Ft :</label>
+                  <input type="number" value="0.00" step=".01" id="ft_text">
+                  <label for="temp_text3" >Temperatura :</label>
+                  <input type="number" value="0.00" step=".01" id="temp_text3">
+                  <span>[°C]</span>
+                </div>
+                <div class="row">
+                  <label for="f_text3" >F3 :</label>
+                  <input type="number" value="0.00" step=".01" id="f_text3">
+                  <button type="button" class="btn btn-info" onclick="myF3Function()">Calcular</button>
+                  <button type="button" class="btn btn-light" onclick="myF3CleaningFunction()">Limpiar</button>
                 </div>
               </div>
               <hr>
@@ -914,11 +999,35 @@
                   <label for="radio_text">Altura (mm):</label>
                   <input type="number" value="0.00" step=".01" id="radio_text">
                 </div>
+                <hr>
                 <div class="row">
                   <label for="volumen_text">Volumen:</label>
                   <input type="number" value="0.00" step=".01" id="volumen_text">
+                  <span>[mm³]</span>
                   <label for="area_text">Área:</label>
                   <input type="number" value="0.00" step=".01" id="area_text">
+                  <span>[m㎡]</span>
+                </div>
+                <div class="row">
+                  <label for="letalidad_text">Letalidad:</label>
+                  <input type="number" value="0.00" step=".01" id="letalidad_text">
+                  <span>[mm]</span>
+                </div>
+                <hr>
+                <h4>Número de Biot</h4>
+                <div class="row">
+                  <label for="conductividad_biot_text">Conductividad Térmica:</label>
+                  <input type="number" value="0.00" step=".01" id="conductividad_biot_text">
+                  <span>[W/m°C]</span>
+                  <label for="calor_biot_text">Calor Específico:</label>
+                  <input type="number" value="0.00" step=".01" id="calor_biot_text">
+                  <span>[J/Kg°C]</span>
+                  <button type="button" class="btn btn-info" onclick="NumeroBiot()">Calcular</button>
+                  <button type="button" class="btn btn-light" onclick="CleaningNumeroBiot()">Limpiar</button>
+                </div>
+                <div class="row">
+                  <label for="biot_text">Bi:</label>
+                  <input type="number" value="0.00" step=".01" id="biot_text">
                 </div>
                 <hr>
                 <table id="table_envases" style="width:100%">
