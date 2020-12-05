@@ -774,7 +774,7 @@
     //$("#alpha").val(coeficiente+delimitador+tokens_List[1]);
     $("#alpha").val(coeficiente[0]+punto+decimales+delimitador+tokens_List[1]);
 	}
-  var cantidadElementosGrafica = 10;
+  var cantidadElementosGrafica = 100;
   var dominio = Array.from(Array(cantidadElementosGrafica).keys()).map(String);
   var emptyData = new Array(cantidadElementosGrafica).fill(0);
   var emptyData2 = new Array(cantidadElementosGrafica).fill(1);
@@ -796,7 +796,7 @@
 				borderColor: window.chartColors.red,
 				backgroundColor: window.chartColors.red,
 				fill: false,
-				data: test1,
+				data: emptyData,
 				yAxesID: 'y',
 			}
       , {
@@ -804,7 +804,7 @@
 				borderColor: window.chartColors.blue,
 				backgroundColor: window.chartColors.blue,
 				fill: false,
-				data: test2,
+				data: emptyData,
 				yAxesID: 'y1'
 			}]
 		};
@@ -846,27 +846,33 @@
 				}
 			});
 		};
-
-		$('actualizar').click(function() {
+    function actualizar(){
+      console.log("clickeando");
+      t_calentamiento = new Number($("#t_calentamiento").val());
+      t_mantenimiento = new Number($("#t_mantenimiento").val());
+      t_enfriamiento = new Number($("#t_enfriamiento").val());
 			lineChartData.datasets.forEach(function(dataset) {
-				dataset.data = dataset.data.map((currElement, index) => {
+        if(dataset.yAxesID === "y1"){
+          dataset.data = dataset.data.map((currElement, index) => {
           console.log("The current iteration is: " + index);
           console.log("The current element is: " + currElement);
           console.log("\n");
           return valorGrafica(index); //equivalent to list[index]
         });
+        }
 			});
 
 			window.myLine.update();
-		});
+    }
+
   function valorGrafica(indice){
     if (t_calentamiento&&t_enfriamiento&&t_mantenimiento){
       var funcionLineal = indice + t_calentamiento;
-      if(funcionLineal<t_enfriamiento){
+      if(funcionLineal<t_mantenimiento){
         return funcionLineal;
       }
       else {
-        return t_enfriamiento
+        return t_mantenimiento
       }
     }
   }
@@ -1199,7 +1205,7 @@
                 <div style="width:75%;">
                   <canvas id="canvas"></canvas>
                 </div>
-                <button id="actualizar">Actualizar</button>
+                <button id="actualizar" onclick="actualizar()">Actualizar</button>
             </div>
           </div>
         </div>
