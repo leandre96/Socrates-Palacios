@@ -16,6 +16,7 @@
   
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
   <style> 
     sub { 
         vertical-align: sub; 
@@ -149,7 +150,7 @@
   var d_text, no_text, n_text, f_text, temperatura, constituyente, densidad, k_text, cp, beta, alpha, s_text, fx_text;
   var g, codigo_text, diametro_text, radio_text, volumen_text, area_text, letalidad_text, vs_text2, temp_text2, dw_text, f_text2;
   var x_i, densidad_i, calor_i, conductividad_i, conductividad_biot_text, calor_biot_text, biot_text, temp_text, z_text;
-  var ft_text, temp_text3, f_text3; 
+  var ft_text, temp_text3, f_text3, ciclos_reduccion, t_calentamiento, t_mantenimiento, t_enfriamiento, tiempo_calentamiento; 
   var EnvasesLata = [
     {
       "codigo":"202x109",
@@ -686,11 +687,13 @@
     //d_text = new Number($("#d_text").val());
 	  no_text = new Number($("#no_text").val());
 	  n_text = new Number($("#n_text").val());
-    var primerLogaritmo = Math.log10(Math.pow(10,no_text));
+    var primerLogaritmo = Math.log10(no_text);
     console.log(primerLogaritmo);
-    var segundoLogaritmo = Math.log10(Math.pow(10,n_text));
+    var segundoLogaritmo = Math.log10(n_text);
     console.log(segundoLogaritmo);
-    f_text = d_text*(primerLogaritmo- segundoLogaritmo);
+    ciclos_reduccion = (primerLogaritmo- segundoLogaritmo);
+    $("#ciclos_reduccion").val(ciclos_reduccion.toFixed(3));
+    f_text = d_text* ciclos_reduccion;
     $("#f_text").val(f_text.toFixed(3));
   }
 
@@ -709,6 +712,7 @@
         $("#no_text").val("");
         $("#n_text").val("");
         $("#f_text").val("");
+        $("#ciclos_reduccion").val("");
 	}
   function myF1Function(){
     temp_text2 = new Number($("#temp_text2").val());
@@ -739,7 +743,7 @@
   function NumeroBiot(){
     conductividad_biot_text = new Number($("#conductividad_biot_text").val());
     calor_biot_text= new Number($("#calor_biot_text").val());
-    biot_text = (calor_biot_text*letalidad_text)/conductividad_biot_text;
+    biot_text = (calor_biot_text*(letalidad_text/100))/conductividad_biot_text;
     $("#biot_text").val(biot_text);
   }
   function CleaningNumeroBiot(){
@@ -770,6 +774,103 @@
     //$("#alpha").val(coeficiente+delimitador+tokens_List[1]);
     $("#alpha").val(coeficiente[0]+punto+decimales+delimitador+tokens_List[1]);
 	}
+  var cantidadElementosGrafica = 10;
+  var dominio = Array.from(Array(cantidadElementosGrafica).keys()).map(String);
+  var emptyData = new Array(cantidadElementosGrafica).fill(0);
+  var emptyData2 = new Array(cantidadElementosGrafica).fill(1);
+  var test1 = [23,4,212,231,1,2,3,42,32,3];
+  var test2 = [45,39,23,273,172,2,35,3,9,3];
+  window.chartColors = {
+    red: 'rgb(255, 99, 132)',
+    orange: 'rgb(255, 159, 64)',
+    yellow: 'rgb(255, 205, 86)',
+    green: 'rgb(51, 204, 51)',
+    blue: 'rgb(54, 162, 235)',
+    purple: 'rgb(153, 102, 255)',
+    grey: 'rgb(201, 203, 207)'
+};
+  var lineChartData = {
+			labels: dominio,
+			datasets: [{
+				label: 'My First dataset',
+				borderColor: window.chartColors.red,
+				backgroundColor: window.chartColors.red,
+				fill: false,
+				data: test1,
+				yAxesID: 'y',
+			}
+      , {
+				label: 'My Second dataset',
+				borderColor: window.chartColors.blue,
+				backgroundColor: window.chartColors.blue,
+				fill: false,
+				data: test2,
+				yAxesID: 'y1'
+			}]
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, {
+				type: 'line',
+				data: lineChartData,
+				options: {
+					responsive: true,
+					interaction: {
+						mode: 'index'
+					},
+					stacked: false,
+					plugins: {
+						title: {
+							display: true,
+							text: 'Texto de gráfica'
+						}
+					},
+					scales: {
+						y: {
+							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: 'left',
+						},
+						y1: {
+							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: 'right',
+
+							// grid line settings
+							gridLines: {
+								drawOnChartArea: false, // only want the grid lines for one axis to show up
+							},
+						},
+					}
+				}
+			});
+		};
+
+		$('actualizar').click(function() {
+			lineChartData.datasets.forEach(function(dataset) {
+				dataset.data = dataset.data.map((currElement, index) => {
+          console.log("The current iteration is: " + index);
+          console.log("The current element is: " + currElement);
+          console.log("\n");
+          return valorGrafica(index); //equivalent to list[index]
+        });
+			});
+
+			window.myLine.update();
+		});
+  function valorGrafica(indice){
+    if (t_calentamiento&&t_enfriamiento&&t_mantenimiento){
+      var funcionLineal = indice + t_calentamiento;
+      if(funcionLineal<t_enfriamiento){
+        return funcionLineal;
+      }
+      else {
+        return t_enfriamiento
+      }
+    }
+  }
+
   </script>
 
 </head>
@@ -783,8 +884,8 @@
             <li class="active"><a data-toggle="tab" href="#home">Propiedades Térmicas</a></li>
             <li><a data-toggle="tab" href="#menu1">Microorganismos</a></li>
             <li><a data-toggle="tab" href="#envases">Latas cilíndricas</a></li>
-            <li><a data-toggle="tab" href="#menu2">Escenario 3</a></li>
-            <li><a data-toggle="tab" href="#menu3">Escenario 4</a></li>
+            <li><a data-toggle="tab" href="#menu2">Enclave</a></li>
+            <li><a data-toggle="tab" href="#menu3">Gráfica</a></li>
         </ul>
           
         <div class="tab-content">
@@ -914,7 +1015,9 @@
                     <input type="number" value="0.00" step=".01" id="n_text">
                 </div>
                 <div class="row">
-                  <label for="f_text" id="f_text_label">Carga microbiaria :</label>
+                  <label for="f_text" id="ciclos_reduccion_label">Ciclos de reducción :</label>
+                  <input type="number" value="0.00" step=".01" id="ciclos_reduccion">
+                  <label for="f_text" id="f_text_label">Fo Deseado :</label>
                   <input type="number" value="0.00" step=".01" id="f_text">
                   <button type="button" class="btn btn-info" onclick="myFoFunction()">Calcular</button>
                   <button type="button" class="btn btn-light" onclick="myFoCleaningFunction()">Limpiar</button>
@@ -928,24 +1031,24 @@
                   <input type="number" value="0.00" step=".01" id="s_text">
                 </div>
                 <div class="row">
-                  <label for="fx_text" id="f_text_label">Vs :</label>
+                  <label for="fx_text" id="f_text_label">Fo Teórico - 1 :</label>
                   <input type="number" value="0.00" step=".01" id="fx_text">
                   <button type="button" class="btn btn-info" onclick="myFxFunction()">Calcular</button>
                   <button type="button" class="btn btn-light" onclick="myFxCleaningFunction()">Limpiar</button>
                 </div>
                 <hr>
                 <div class="row">
-                  <label for="vs_text2" >Vs :</label>
-                  <input type="number" value="0.00" step=".01" id="vs_text2">
                   <label for="temp_text2" >Temperatura :</label>
                   <input type="number" value="0.00" step=".01" id="temp_text2">
                   <span>[°C]</span>
+                  <label for="vs_text2" >Vs :</label>
+                  <input type="number" value="0.00" step=".01" id="vs_text2">
                 </div>
                 <div class="row">
                   <label for="dw_text" >Dw :</label>
                   <input type="number" value="0.00" step=".01" id="dw_text">
                   <span>[min]</span>
-                  <label for="f_text2" >F1 :</label>
+                  <label for="f_text2" >Fo Teórico - 2 :</label>
                   <input type="number" value="0.00" step=".01" id="f_text2">
                   <button type="button" class="btn btn-info" onclick="myF1Function()">Calcular</button>
                   <button type="button" class="btn btn-light" onclick="myF1CleaningFunction()">Limpiar</button>
@@ -959,7 +1062,7 @@
                   <span>[°C]</span>
                 </div>
                 <div class="row">
-                  <label for="f_text3" >F3 :</label>
+                  <label for="f_text3" >Fo Teórico - 3 :</label>
                   <input type="number" value="0.00" step=".01" id="f_text3">
                   <button type="button" class="btn btn-info" onclick="myF3Function()">Calcular</button>
                   <button type="button" class="btn btn-light" onclick="myF3CleaningFunction()">Limpiar</button>
@@ -980,7 +1083,21 @@
             <div id="menu2" class="tab-pane fade">
               <div class="container" align="center">
                 <div class="row">
-                    <input id="deltat" type="number" placeholder="Δt" step=".01">
+                  <label for="t_calentamiento" >Temperatura de calentamiento :</label>
+                  <input type="number" value="0.00" step=".01" id="t_calentamiento">
+                  <span>[°C]</span>
+                  <label for="tiempo_calentamiento" >Tiempo de calentamiento :</label>
+                  <input type="number" value="0.00" step=".01" id="tiempo_calentamiento">
+                </div>
+                <div class="row">
+                  <label for="t_mantenimiento" >Temperatura de mantenimiento :</label>
+                  <input type="number" value="0.00" step=".01" id="t_mantenimiento">
+                  <span>[°C]</span>
+                </div>
+                <div class="row">
+                  <label for="t_enfriamiento" >Temperatura de enfriamiento :</label>
+                  <input type="number" value="0.00" step=".01" id="t_enfriamiento">
+                  <span>[°C]</span>
                 </div>
                 <div class="row">
                     <button type="button" class="btn btn-info">Calcular</button>
@@ -1009,7 +1126,7 @@
                   <span>[m㎡]</span>
                 </div>
                 <div class="row">
-                  <label for="letalidad_text">Letalidad:</label>
+                  <label for="letalidad_text">Longitud característica:</label>
                   <input type="number" value="0.00" step=".01" id="letalidad_text">
                   <span>[mm]</span>
                 </div>
@@ -1019,9 +1136,9 @@
                   <label for="conductividad_biot_text">Conductividad Térmica:</label>
                   <input type="number" value="0.00" step=".01" id="conductividad_biot_text">
                   <span>[W/m°C]</span>
-                  <label for="calor_biot_text">Calor Específico:</label>
+                  <label for="calor_biot_text">Coeficiente de Transferencia de calor del medio:</label>
                   <input type="number" value="0.00" step=".01" id="calor_biot_text">
-                  <span>[J/Kg°C]</span>
+                  <span>[W/°C]</span>
                   <button type="button" class="btn btn-info" onclick="NumeroBiot()">Calcular</button>
                   <button type="button" class="btn btn-light" onclick="CleaningNumeroBiot()">Limpiar</button>
                 </div>
@@ -1078,9 +1195,21 @@
                     <input type="number" disabled>
                     <input type="number" disabled>
                 </div>
+                <hr>
+                <div style="width:75%;">
+                  <canvas id="canvas"></canvas>
+                </div>
+                <button id="actualizar">Actualizar</button>
             </div>
           </div>
         </div>
     </div>
+    <hr>
+    <footer>
+      <div class="container" align="center">
+        <p>Autor: Ing. Leonardo André Castro Albán</p>
+        <p><a href="mailto:leancast@espol.edu.ec">leancast@espol.edu.ec</a></p>
+      </div>
+    </footer>
 </body>
 </html>
