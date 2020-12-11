@@ -150,7 +150,7 @@
   var d_text, no_text, n_text, f_text, temperatura, constituyente, densidad, k_text, cp, beta, alpha, s_text, fx_text;
   var g, codigo_text, diametro_text, radio_text, volumen_text, area_text, letalidad_text, vs_text2, temp_text2, dw_text, f_text2;
   var x_i, densidad_i, calor_i, conductividad_i, conductividad_biot_text, calor_biot_text, biot_text, temp_text, z_text;
-  var ft_text, temp_text3, f_text3, ciclos_reduccion, t_calentamiento, t_mantenimiento, t_enfriamiento, tiempo_calentamiento; 
+  var ft_text, temp_text3, f_text3, ciclos_reduccion, t_calentamiento, t_mantenimiento, t_enfriamiento, tiempo_calentamiento, t_agua, kc; 
   var EnvasesLata = [
     {
       "codigo":"202x109",
@@ -774,7 +774,7 @@
     //$("#alpha").val(coeficiente+delimitador+tokens_List[1]);
     $("#alpha").val(coeficiente[0]+punto+decimales+delimitador+tokens_List[1]);
 	}
-  var cantidadElementosGrafica = 100;
+  var cantidadElementosGrafica = 120;
   var dominio = Array.from(Array(cantidadElementosGrafica).keys()).map(String);
   var emptyData = new Array(cantidadElementosGrafica).fill(0);
   var emptyData2 = new Array(cantidadElementosGrafica).fill(1);
@@ -851,6 +851,9 @@
       t_calentamiento = new Number($("#t_calentamiento").val());
       t_mantenimiento = new Number($("#t_mantenimiento").val());
       t_enfriamiento = new Number($("#t_enfriamiento").val());
+      tiempo_calentamiento = new Number($("#tiempo_calentamiento").val());
+      t_agua = new Number($("#t_agua").val());
+      kc = new Number($("#kc").val());
 			lineChartData.datasets.forEach(function(dataset) {
         if(dataset.yAxesID === "y1"){
           dataset.data = dataset.data.map((currElement, index) => {
@@ -867,12 +870,21 @@
 
   function valorGrafica(indice){
     if (t_calentamiento&&t_enfriamiento&&t_mantenimiento){
-      var funcionLineal = indice + t_calentamiento;
+      var pendiente = (t_mantenimiento - t_calentamiento)/tiempo_calentamiento;
+      var funcionLineal = (indice*pendiente) + t_calentamiento;
+      var piso = Math.floor(f_text);
+      var exponencial = (t_mantenimiento - t_agua)/(Math.pow(Math.E,(indice/kc)))
       if(funcionLineal<t_mantenimiento){
         return funcionLineal;
       }
-      else {
-        return t_mantenimiento
+      else if(indice<piso){
+        return t_mantenimiento;
+      }
+      else if(exponencial<t_enfriamiento) {
+        return  exponencial;
+      }
+      else{
+        return t_enfriamiento;
       }
     }
   }
@@ -1089,7 +1101,7 @@
             <div id="menu2" class="tab-pane fade">
               <div class="container" align="center">
                 <div class="row">
-                  <label for="t_calentamiento" >Temperatura de calentamiento :</label>
+                  <label for="t_calentamiento" >Temperatura inicial - Sistema :</label>
                   <input type="number" value="0.00" step=".01" id="t_calentamiento">
                   <span>[°C]</span>
                   <label for="tiempo_calentamiento" >Tiempo de calentamiento :</label>
@@ -1101,9 +1113,16 @@
                   <span>[°C]</span>
                 </div>
                 <div class="row">
-                  <label for="t_enfriamiento" >Temperatura de enfriamiento :</label>
+                  <label for="t_enfriamiento" >Temperatura final - Sistema :</label>
                   <input type="number" value="0.00" step=".01" id="t_enfriamiento">
                   <span>[°C]</span>
+                </div>
+                <div class="row">
+                  <label for="t_agua" >Temperatura de agua :</label>
+                  <input type="number" value="0.00" step=".01" id="t_agua">
+                  <span>[°C]</span>
+                  <label for="kc" >Constante del cambiador :</label>
+                  <input type="number" value="0.00" step=".01" id="kc">
                 </div>
                 <div class="row">
                     <button type="button" class="btn btn-info">Calcular</button>
